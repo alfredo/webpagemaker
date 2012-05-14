@@ -32,7 +32,6 @@ if bleach.VERSION < (1, 1, 1):
                     "https://github.com/simonwex/bleach.git")
 
 def sanitize(html):
-    html = bleach.clean(html, strip=True, strip_comments=False,
+    return bleach.clean(html, strip=True, strip_comments=False,
                         tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRS,
-                        parse_as_fragment=False)
-    return html
+                        parse_as_fragment=False, nofollow=True)
