@@ -26,7 +26,7 @@ An absolute path to read the published page, e.g. `/p/1`.
 
 ## Read Page
 
-Returns the sanitized HTML of a previously published page.
+Returns the sanitized HTML of a previously published page, including nofollow on links.
 
 **Endpoint:** `/p/{id}`
 
@@ -39,6 +39,21 @@ Returns the sanitized HTML of a previously published page.
 The [bleach][]-sanitized HTML for the page corresponding to `{id}`.
 
   [bleach]: http://pypi.python.org/pypi/bleach
+
+
+## Remix Page
+
+Similar to above, returns the sanitized HTML of a previously published page, but without nofollow.
+
+**Endpoint:** `/p/{id}?code=1`
+
+**HTTP Method:** `GET`
+
+### Return Value
+
+**Content Type:** `text/plain`
+
+Sanitized version of a page, but without nofollow.
 
 ## Read Configuration
 
