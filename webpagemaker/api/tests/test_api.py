@@ -5,7 +5,7 @@ import test_utils
 from nose.tools import eq_, ok_
 
 class PublishTests(test_utils.TestCase):
-    def _publish_and_verify(self, html, expected_html=None):
+    def _publish_and_verify(self, html, expected_html=None, expected_content_type='text/html; charset=utf-8', additional_get={}):
         """
         Publish the given string of valid HTML5, then fetch it back and
         make sure it's identical to our expectation. If no expectation
@@ -20,10 +20,10 @@ class PublishTests(test_utils.TestCase):
         eq_(response['Access-Control-Allow-Origin'], '*')
 
         page_id = response.content
-        response = self.client.get(page_id)
+        response = self.client.get(page_id, additional_get)
         eq_(response.status_code, 200)
         eq_(response['Access-Control-Allow-Origin'], '*')
-        eq_(response['Content-Type'], 'text/html; charset=utf-8')
+        eq_(response['Content-Type'], expected_content_type)
         eq_(type(response.content), str)
         eq_(response.content, expected_html)
 
@@ -93,3 +93,19 @@ class PublishTests(test_utils.TestCase):
                u"<title>hi</title></head>" + \
                u"<body>hello\u2026</body></html>"
         self._publish_and_verify(HTML.encode("utf-8"))
+
+    def test_nofollow(self):
+        HTML     = '<html><head></head><body><a href="http://linkbait">i love googlebombing</a></body></html>'
+        EXPECTED = '<html><head></head><body><a href="http://linkbait" rel="nofollow">i love googlebombing</a></body></html>'
+        self._publish_and_verify(HTML, EXPECTED)
+
+    def test_code_remix_output(self):
+        HTML     = '<html><head></head><body><a href="http://linkbait">i love googlebombing</a></body></html>'
+        EXPECTED = '<html><head></head><body><a href="http://linkbait">i love googlebombing</a></body></html>'
+        self._publish_and_verify(HTML,
+                                 EXPECTED,
+                                 expected_content_type='text/plain; charset=utf-8',
+                                 additional_get={'code':'yesplease'})
+
+
+

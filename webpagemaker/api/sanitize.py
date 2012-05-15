@@ -31,7 +31,7 @@ if bleach.VERSION < (1, 1, 1):
     raise Exception("Please use simon wex's bleach fork for now: " +
                     "https://github.com/simonwex/bleach.git")
 
-def sanitize(html):
+def sanitize(html, nofollow=True):
     return bleach.clean(html, strip=True, strip_comments=False,
                         tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRS,
-                        parse_as_fragment=False, nofollow=True)
+                        parse_as_fragment=False, nofollow=nofollow)

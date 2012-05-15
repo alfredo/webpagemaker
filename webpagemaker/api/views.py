@@ -40,8 +40,17 @@ def get_sanitizer_config(request):
     return response
 
 def get_page(request, page_id):
+    # the code_flag allows the api to display the santized html without nofollow, and as plain
+    # text for remixing.
+    code_flag = request.GET.get('code', False)
+    if code_flag:
+        nofollow = False
+        mimetype= 'text/plain; charset=utf-8'
+    else:
+        nofollow = True
+        mimetype = 'text/html; charset=utf-8'
     page = get_object_or_404(models.Page, pk=page_id)
-    response = HttpResponse(sanitize.sanitize(page.html))
+    response = HttpResponse(sanitize.sanitize(page.html,nofollow=nofollow), mimetype=mimetype)
     if page.original_url:
         response['X-Original-URL'] = page.original_url
     response['Access-Control-Allow-Origin'] = '*'
